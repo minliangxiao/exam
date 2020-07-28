@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="prj.mapper.TestpaperMapper">
+
+	<resultMap id="BaseResultMap" type="prj.entity.Testpaper">
+		<id column="id" property="id" />
+        <result column="subject_id" property="subjectId" />  
+           <result column="grade_id" property="gradeId" />  
+        <!--
+        <association property="subject" column="subject_id" select="getSubject"/>  
+        <select id="getSubject" parameterType="int" resultType="prj.entity.Subject">  
+            SELECT subject.* FROM subject WHERE id=#{id}  
+        </select>
+        -->
+		<result column="name" property="name" />
+		<result column="code" property="code" />
+		<result column="minutes" property="minutes" />
+		<result column="total_score" property="totalScore" />
+		<result column="is_deleted" property="isDeleted" />
+        <association property="subject" column="subject_id" select="prj.mapper.SubjectMapper.selectById"></association>
+        <!--
+        <association property="subject" column="subject_id" select="getSubject"/>  
+        <select id="getSubject" parameterType="int" resultType="prj.entity.Subject">  
+            SELECT subject.* FROM subject WHERE id=#{id}  
+        </select>
+        -->
+	</resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id,grade_id AS gradeId, subject_id AS subjectId, name, code, minutes, total_score AS totalScore, is_deleted AS isDeleted, subject_id AS subjectId
+    </sql>
+    
+    <select id="findMaxCode" parameterType="int"  resultType="java.lang.String">
+	  SELECT MAX(code) FROM testpaper WHERE subject_id IN (SELECT id FROM subject WHERE school_id = #{schoolId})
+	</select>
+</mapper>
