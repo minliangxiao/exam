@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="prj.mapper.ExamMapper">
+
+	<resultMap id="BaseResultMap" type="prj.entity.Exam">
+		<id column="id" property="id" />
+        <result column="testpaper_id" property="testpaperId" />  
+        <!--
+        <association property="testpaper" column="testpaper_id" select="getTestpaper"/>  
+        <select id="getTestpaper" parameterType="int" resultType="prj.entity.Testpaper">  
+            SELECT testpaper.* FROM testpaper WHERE id=#{id}  
+        </select>
+        -->
+		<result column="name" property="name" />
+		<result column="start_time" property="startTime" />
+		<result column="total_student_qty" property="totalStudentQty" />
+		<result column="exam_student_qty" property="examStudentQty" />
+		<result column="end_time" property="endTime" />
+		<result column="finish_student_qty" property="finishStudentQty" />
+		<result column="status" property="status" />
+		<result column="is_deleted" property="isDeleted" />
+		<result column="total_score" property="totalScore" />
+		<result column="avg_score" property="avgScore" />
+		<result column="type" property="type" />
+		<result column="public_answer" property="publicAnswer" />
+        <association property="testpaper" column="testpaper_id" select="prj.mapper.TestpaperMapper.selectById"></association>
+        <!--
+        <association property="testpaper" column="testpaper_id" select="getTestpaper"/>  
+        <select id="getTestpaper" parameterType="int" resultType="prj.entity.Testpaper">  
+            SELECT testpaper.* FROM testpaper WHERE id=#{id}  
+        </select>
+        -->
+	</resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id, testpaper_id AS testpaperId, name, start_time AS startTime, total_student_qty AS totalStudentQty, exam_student_qty AS examStudentQty, end_time AS endTime, finish_student_qty AS finishStudentQty, status, is_deleted AS isDeleted, total_score AS totalScore, avg_score AS avgScore, type, public_answer AS publicAnswer, testpaper_id AS testpaperId
+    </sql>
+</mapper>

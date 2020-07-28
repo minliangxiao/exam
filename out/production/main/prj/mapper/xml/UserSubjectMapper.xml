@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="prj.mapper.UserSubjectMapper">
+
+	<resultMap id="BaseResultMap" type="prj.entity.UserSubject">
+		<id column="id" property="id" />
+        <result column="user_id" property="userId" />  
+        <!--
+        <association property="user" column="user_id" select="getUser"/>  
+        <select id="getUser" parameterType="int" resultType="prj.entity.User">  
+            SELECT user.* FROM user WHERE id=#{id}  
+        </select>
+        -->
+        <result column="subject_id" property="subjectId" />  
+        <!--
+        <association property="subject" column="subject_id" select="getSubject"/>  
+        <select id="getSubject" parameterType="int" resultType="prj.entity.Subject">  
+            SELECT subject.* FROM subject WHERE id=#{id}  
+        </select>
+        -->
+		<result column="time" property="time" />
+		<result column="is_deleted" property="isDeleted" />
+		<result column="is_exam" property="isExam" />
+        <association property="user" column="user_id" select="prj.mapper.UserMapper.selectById"></association>
+        <!--
+        <association property="user" column="user_id" select="getUser"/>  
+        <select id="getUser" parameterType="int" resultType="prj.entity.User">  
+            SELECT user.* FROM user WHERE id=#{id}  
+        </select>
+        -->
+        <association property="subject" column="subject_id" select="prj.mapper.SubjectMapper.selectById"></association>
+        <!--
+        <association property="subject" column="subject_id" select="getSubject"/>  
+        <select id="getSubject" parameterType="int" resultType="prj.entity.Subject">  
+            SELECT subject.* FROM subject WHERE id=#{id}  
+        </select>
+        -->
+	</resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id, user_id AS userId, subject_id AS subjectId, time, is_deleted AS isDeleted, user_id AS userId, subject_id AS subjectId
+    </sql>
+</mapper>

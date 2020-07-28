@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="prj.mapper.UserExamMapper">
+
+	<resultMap id="BaseResultMap" type="prj.entity.UserExam">
+		<id column="id" property="id" />
+        <result column="student_id" property="studentId" />  
+        <!--
+        <association property="student" column="student_id" select="getUser"/>  
+        <select id="getUser" parameterType="int" resultType="prj.entity.User">  
+            SELECT user.* FROM user WHERE id=#{id}  
+        </select>
+        -->
+        <result column="exam_id" property="examId" />  
+        <!--
+        <association property="exam" column="exam_id" select="getExam"/>  
+        <select id="getExam" parameterType="int" resultType="prj.entity.Exam">  
+            SELECT exam.* FROM exam WHERE id=#{id}  
+        </select>
+        -->
+        <result column="teacher_id" property="teacherId" />  
+        <!--
+        <association property="teacher" column="teacher_id" select="getUser"/>  
+        <select id="getUser" parameterType="int" resultType="prj.entity.User">  
+            SELECT user.* FROM user WHERE id=#{id}  
+        </select>
+        -->
+		<result column="time" property="time" />
+		<result column="right_qty" property="rightQty" />
+		<result column="error_qty" property="errorQty" />
+		<result column="score" property="score" />
+		<result column="is_deleted" property="isDeleted" />
+		<result column="comment" property="comment" />
+		<result column="status" property="status" />
+		<result column="reg_time" property="regTime" />
+        <association property="student" column="student_id" select="prj.mapper.UserMapper.selectById"></association>
+        <!--
+        <association property="student" column="student_id" select="getUser"/>  
+        <select id="getUser" parameterType="int" resultType="prj.entity.User">  
+            SELECT user.* FROM user WHERE id=#{id}  
+        </select>
+        -->
+        <association property="exam" column="exam_id" select="prj.mapper.ExamMapper.selectById"></association>
+        <!--
+        <association property="exam" column="exam_id" select="getExam"/>  
+        <select id="getExam" parameterType="int" resultType="prj.entity.Exam">  
+            SELECT exam.* FROM exam WHERE id=#{id}  
+        </select>
+        -->
+        <association property="teacher" column="teacher_id" select="prj.mapper.UserMapper.selectById"></association>
+        <!--
+        <association property="teacher" column="teacher_id" select="getUser"/>  
+        <select id="getUser" parameterType="int" resultType="prj.entity.User">  
+            SELECT user.* FROM user WHERE id=#{id}  
+        </select>
+        -->
+	</resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id, student_id AS studentId, exam_id AS examId, teacher_id AS teacherId, time, right_qty AS rightQty, error_qty AS errorQty, score, is_deleted AS isDeleted, comment, status, reg_time AS regTime, student_id AS studentId, exam_id AS examId, teacher_id AS teacherId
+    </sql>
+</mapper>

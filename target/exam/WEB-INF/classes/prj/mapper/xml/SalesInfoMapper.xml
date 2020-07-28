@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="prj.mapper.SalesInfoMapper">
+
+	<resultMap id="BaseResultMap" type="prj.entity.SalesInfo">
+		<id column="id" property="id" />
+		<result column="no" property="no" />
+		<result column="brand" property="brand" />
+		<result column="type" property="type" />
+		<result column="product" property="product" />
+		<result column="buy_price" property="buyPrice" />
+		<result column="sell_price" property="sellPrice" />
+		<result column="status" property="status" />
+		<result column="buy_time" property="buyTime" />
+		<result column="sell_time" property="sellTime" />
+		<result column="is_deleted" property="isDeleted" />
+		<result column="upload_user" property="uploadUser" />
+		<result column="upload_time" property="uploadTime" />
+	</resultMap>
+	
+	<resultMap id="BarChartDataItem" type="prj.entity.BarChartDataItem">
+		<id column="name" property="name" />
+		<result column="rate" property="rate" />
+	</resultMap>	
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id, no, brand, type, product, buy_price AS buyPrice, sell_price AS sellPrice, status, buy_time AS buyTime, sell_time AS sellTime, is_deleted AS isDeleted, upload_user AS uploadUser, upload_time AS uploadTime
+    </sql>
+    
+    <select id="summaryTypeRateByBrand" resultMap="BarChartDataItem">
+        SELECT t AS name, (SUM(sellPrice) - SUM(buyPrice)) / SUM(sellPrice) * 100 AS rate FROM(
+			SELECT s.type AS t, s.sell_price AS sellPrice, 0 AS buyPrice
+				FROM sales_info s
+				WHERE MONTH(s.sell_time) = #{month,jdbcType=INTEGER} AND s.status = '售出'
+				AND s.brand = #{brand,jdbcType=VARCHAR}
+			UNION 
+			SELECT s.type AS t, 0 AS sellPrice, s.buy_price AS buyPrice
+				FROM sales_info s
+				WHERE MONTH(s.buy_time) =  #{month} AND s.status = '滞仓'
+				AND s.brand = #{brand,jdbcType=VARCHAR}
+		) a
+		GROUP BY a.t
+		HAVING SUM(sellPrice) > 0
+    </select>
+   
+     <select id="summaryBrandRateByType" resultMap="BarChartDataItem">
+        SELECT t AS name, (SUM(sellPrice) - SUM(buyPrice)) / SUM(sellPrice) * 100 AS rate FROM(
+			SELECT s.brand AS t, s.sell_price AS sellPrice, 0 AS buyPrice
+				FROM sales_info s
+				WHERE MONTH(s.sell_time) = #{month,jdbcType=INTEGER} AND s.status = '售出'
+				AND s.type = #{type,jdbcType=VARCHAR}
+			UNION 
+			SELECT s.brand AS t, 0 AS sellPrice, s.buy_price AS buyPrice
+				FROM sales_info s
+				WHERE MONTH(s.buy_time) =  #{month} AND s.status = '滞仓'
+				AND s.type = #{type,jdbcType=VARCHAR}
+		) a
+		GROUP BY a.t
+		HAVING SUM(sellPrice) > 0
+    </select>   
+    
+     <select id="summaryBrandRate" resultMap="BarChartDataItem">
+		SELECT t AS name, (SUM(sellPrice) - SUM(buyPrice)) / SUM(sellPrice) * 100 AS rate FROM(
+		SELECT s.brand AS t, s.sell_price AS sellPrice, 0 AS buyPrice
+		FROM sales_info s
+		WHERE MONTH(s.sell_time) = #{month,jdbcType=INTEGER} AND s.status = '售出'
+		UNION 
+		SELECT s.brand AS t, 0 AS sellPrice, s.buy_price AS buyPrice
+		FROM sales_info s
+		WHERE MONTH(s.sell_time) = #{month,jdbcType=INTEGER} AND s.status = '售出'
+		) a
+		GROUP BY a.t
+		HAVING SUM(sellPrice) > 0
+    </select>       
+    
+    <select id="summaryAssertRate1" resultMap="BarChartDataItem">
+         <![CDATA[ 
+			SELECT CONCAT(#{year,jdbcType=INTEGER},'-',#{month,jdbcType=INTEGER}) AS name, SUM(sell_price) + SUM(buy_price) AS rate
+			FROM ( 
+			SELECT YEAR(sell_time) AS y, MONTH(sell_time) AS m, 0 AS buy_price, buy_price AS cost, sell_price FROM sales_info WHERE status='售出'
+			UNION
+			SELECT YEAR(buy_time) AS y, MONTH(buy_time) AS m, buy_price, 0 AS cost, sell_price FROM sales_info WHERE status='滞仓'
+			) s
+			WHERE (y < #{year,jdbcType=INTEGER}) OR (y = #{year,jdbcType=INTEGER} AND m <= #{month,jdbcType=INTEGER})
+			]]> 
+    </select>    
+    
+    <select id="summaryAssertRate2" resultMap="BarChartDataItem">
+         <![CDATA[ 
+			SELECT CONCAT(#{year,jdbcType=INTEGER},'-',#{month,jdbcType=INTEGER}) AS name, SUM(sell_price)  AS rate
+			FROM ( 
+			SELECT YEAR(sell_time) AS y, MONTH(sell_time) AS m, 0 AS buy_price, buy_price AS cost, sell_price FROM sales_info WHERE status='售出'
+			) s
+			WHERE (y < #{year,jdbcType=INTEGER}) OR (y = #{year,jdbcType=INTEGER} AND m <= #{month,jdbcType=INTEGER})
+			]]> 
+    </select>        
+    
+    
+    
+</mapper>

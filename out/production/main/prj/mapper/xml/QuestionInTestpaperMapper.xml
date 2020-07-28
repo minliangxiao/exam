@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="prj.mapper.QuestionInTestpaperMapper">
+
+	<resultMap id="BaseResultMap" type="prj.entity.QuestionInTestpaper">
+		<id column="id" property="id" />
+        <result column="testpaper_id" property="testpaperId" />  
+        <!--
+        <association property="testpaper" column="testpaper_id" select="getTestpaper"/>  
+        <select id="getTestpaper" parameterType="int" resultType="prj.entity.Testpaper">  
+            SELECT testpaper.* FROM testpaper WHERE id=#{id}  
+        </select>
+        -->
+        <result column="question_id" property="questionId" />  
+        <!--
+        <association property="question" column="question_id" select="getQuestion"/>  
+        <select id="getQuestion" parameterType="int" resultType="prj.entity.Question">  
+            SELECT question.* FROM question WHERE id=#{id}  
+        </select>
+        -->
+		<result column="is_deleted" property="isDeleted" />
+		<result column="score" property="score" />
+        <association property="testpaper" column="testpaper_id" select="prj.mapper.TestpaperMapper.selectById"></association>
+        <!--
+        <association property="testpaper" column="testpaper_id" select="getTestpaper"/>  
+        <select id="getTestpaper" parameterType="int" resultType="prj.entity.Testpaper">  
+            SELECT testpaper.* FROM testpaper WHERE id=#{id}  
+        </select>
+        -->
+        <association property="question" column="question_id" select="prj.mapper.QuestionMapper.selectById"></association>
+        <!--
+        <association property="question" column="question_id" select="getQuestion"/>  
+        <select id="getQuestion" parameterType="int" resultType="prj.entity.Question">  
+            SELECT question.* FROM question WHERE id=#{id}  
+        </select>
+        -->
+	</resultMap>
+
+    <!-- 通用查询结果列-->
+    <sql id="Base_Column_List">
+        id, testpaper_id AS testpaperId, question_id AS questionId, is_deleted AS isDeleted, score, testpaper_id AS testpaperId, question_id AS questionId
+    </sql>
+</mapper>
